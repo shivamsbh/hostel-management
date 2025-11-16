@@ -1,69 +1,30 @@
 version: '3.8'
 
-# Local Development Docker Compose
 services:
-  # MongoDB Database
+  # Database
   mongodb:
-    image: mongo:7.0
-    container_name: hostel-mongodb-local
+    image: mongo:latest
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
-      MONGO_INITDB_DATABASE: hostel
-    volumes:
-      - mongodb_local_data:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    networks:
-      - hostel-network
 
-  # Backend Service (with hot reload for local development)
+  # Backend API  
   backend:
-    build:
-      context: ./Hoste_Backend
-      dockerfile: Dockerfile
-    container_name: hostel-backend-local
+    build: ./Hoste_Backend
     ports:
       - "4000:4000"
     environment:
-      - NODE_ENV=development
-      - PORT=4000
-      - DATABASE_URL=mongodb://hostel_user:hostel_password@mongodb:27017/hostel?authSource=hostel
-      - JWT_URL=project0f2024
+      - DATABASE_URL=mongodb://mongodb:27017/hostel
     depends_on:
       - mongodb
     volumes:
       - ./Hoste_Backend:/app
       - /app/node_modules
-    networks:
-      - hostel-network
 
-  # Frontend Service (local development)
+  # Frontend
   frontend:
-    build:
-      context: ./Hoste_Frontend
-      dockerfile: Dockerfile
-    container_name: hostel-frontend-local
+    build: ./Hoste_Frontend  
     ports:
       - "3000:3000"
-    environment:
-      - REACT_APP_API_URL=http://localhost:4000
-      - CHOKIDAR_USEPOLLING=true
-    depends_on:
-      - backend
     volumes:
       - ./Hoste_Frontend:/app
       - /app/node_modules
-    networks:
-      - hostel-network
-
-# Networks
-networks:
-  hostel-network:
-    driver: bridge
-
-# Volumes
-volumes:
-  mongodb_local_data:
-    driver: local
