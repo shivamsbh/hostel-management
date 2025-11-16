@@ -1,11 +1,10 @@
 // src/api/config.js
-const BASE_URL = "https://hoste-backend.vercel.app";//
-//http://localhost:4000/route
-// http://localhost:4000/
+// Configuration for local Docker development
 
+const BASE_URL = "http://localhost:4000";  // For local Docker development
 
-// const BASE_URL = "http://localhost:4000";
-
+// For Vercel deployment (uncomment if needed)
+// const BASE_URL = "https://hoste-backend.vercel.app";
 
 export default BASE_URL;
 // https://hoste-backend.vercel.app/
